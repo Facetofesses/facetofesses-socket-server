@@ -1,5 +1,6 @@
 import ActeExperience from './ActeExperience'
 import ZenExperience from './ZenExperience'
+import AmbiantExperience from './AmbiantExperience'
 import UserManager from '../User/UserManager'
 
 class ExperienceManager {
@@ -7,11 +8,12 @@ class ExperienceManager {
     this.experiences = []
     this.experiences.push(new ZenExperience())
     this.experiences.push(new ActeExperience())
+    this.experiences.push(new AmbiantExperience())
   }
 
   getActiveExperience () {
     return this.experiences.find((experience) => {
-      return experience.isActive()
+      return experience.active === true
     })
   }
 

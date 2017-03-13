@@ -1,86 +1,53 @@
-import express from 'express'
-import bodyParser from 'body-parser'
+import Express from 'express'
+import http from 'http'
+import SockJs from 'sockjs'
 import ExperienceManager from '../Experiences/ExperienceManager'
-import {headerMiddleware, createResponseMiddleware} from './Middleware'
+import Data from './Data'
 
-const dbg = debug('app:Server')
-const PORT = process.env.PORT || 3000
+const PORT = 8080
 
 export default class Server {
   constructor () {
-    this.mainRouter = express()
-    this.apiRouter = express.Router()
-    this.port = PORT
-
-    ExperienceManager.defineExperiences()
-
-    this.mainRouter.use('/api', this.apiRouter)
-
-    this.addBodyParserMiddleware()
-    this.addResponseHeaderMiddleware()
-    this.addResponseCreationMiddleware()
+    this.app = Express()
+    this.app.use(Express.static('public'))
+    this.sockets = []
 
     this.setMainRoutes()
-    this.setApiRoutes()
+    this.createServer()
+    this.setSocketRoutes()
+
+    ExperienceManager.defineExperiences()
+  }
+
+  createServer () {
+    this.server = http.createServer(this.app)
+    this.io = SockJs.createServer({
+      sockjs_url: 'http://cdn.jsdelivr.net/sockjs/1.0.1/sockjs.min.js'
+    })
+    this.io.installHandlers(this.server, {
+      prefix: '/ws'
+    })
   }
 
   setMainRoutes () {
-    this.mainRouter.get('/', () => {
-      this.response
-        .addStatus('success')
-        .addStatusCode(200)
-        .addMessage('Welcome, API is accessible at /api')
-        .send()
+    this.app.get('/', (req, res) => {
+      res.sendFile('index.html')
     })
   }
 
-  setApiRoutes () {
-    this.apiRouter.get('/', () => {
-      this.response
-        .addStatus('success')
-        .addStatusCode(200)
-        .addMessage('Welcome !')
-        .send()
+  setSocketRoutes () {
+    this.io.on('connection', (socket) => {
+      socket.on('data', (datas) => {
+        const data = new Data(datas)
+        if (data.getType() === 'auth') {
+          ExperienceManager.getExperienceByName(data.get('device')).setSocket(socket)
+        }
+      })
+      this.sockets.push(socket)
     })
-
-    this.apiRouter.get('/start', () => {
-      ExperienceManager.start()
-      this.response
-        .addStatus('success')
-        .addStatusCode(200)
-        .addDatas(ExperienceManager
-          .getActiveExperience()
-          .getDatas())
-        .send()
-    })
-
-    this.apiRouter.get('/end', () => {
-      ExperienceManager.end()
-      this.response
-        .addStatus('success')
-        .addStatusCode(200)
-        .send()
-    })
-  }
-
-  addBodyParserMiddleware () {
-    this.apiRouter.use(bodyParser.urlencoded({ extended: false }))
-    this.apiRouter.use(bodyParser.json())
-  }
-
-  addResponseHeaderMiddleware () {
-    this.mainRouter.use(headerMiddleware)
-    this.apiRouter.use(headerMiddleware)
-  }
-
-  addResponseCreationMiddleware () {
-    this.mainRouter.use(createResponseMiddleware(this))
-    this.apiRouter.use(createResponseMiddleware(this))
   }
 
   start () {
-    this.mainRouter.listen(this.port, () => {
-      dbg(`Server start at ${this.port}`)
-    })
+    this.server.listen(PORT, '0.0.0.0')
   }
 }
