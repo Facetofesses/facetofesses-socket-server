@@ -11,7 +11,7 @@ const PORT = 8080
 export default class Server {
   constructor () {
     this.app = Express()
-    this.app.use(Express.static('public'))
+    this.app.use(Express.static('build/public'))
 
     this.setMainRoutes()
     this.createServer()
