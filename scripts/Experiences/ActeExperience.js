@@ -1,7 +1,9 @@
 import Experience from './Experience'
 
-export default class ActeExperience extends Experience {
+class ActeExperience extends Experience {
   constructor () {
     super('acte')
   }
 }
+
+export default new ActeExperience()

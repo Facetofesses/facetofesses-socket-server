@@ -1,7 +1,7 @@
 import Experience from './Experience'
 import UserManager from '../User/UserManager'
 
-export default class ZenExperience extends Experience {
+class ZenExperience extends Experience {
   constructor () {
     super('zen')
   }
@@ -10,3 +10,5 @@ export default class ZenExperience extends Experience {
     return UserManager.getCurrentUser()
   }
 }
+
+export default new ZenExperience()

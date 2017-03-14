@@ -1,16 +1,12 @@
 import User from './index'
 
 class UserManager {
+  constructor () {
+    this.users = []
+  }
+
   createUser () {
-    this.currentUser = new User()
-  }
-
-  deleteUser () {
-    this.currentUser = null
-  }
-
-  getCurrentUser () {
-    return this.currentUser
+    this.users.push(new User())
   }
 }
 

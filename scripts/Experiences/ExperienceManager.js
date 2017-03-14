@@ -1,25 +1,21 @@
 import ActeExperience from './ActeExperience'
 import ZenExperience from './ZenExperience'
-import AmbiantExperience from './AmbiantExperience'
 import UserManager from '../User/UserManager'
 
 class ExperienceManager {
   defineExperiences () {
-    this.experiences = []
-    this.experiences.push(new ZenExperience())
-    this.experiences.push(new ActeExperience())
-    this.experiences.push(new AmbiantExperience())
-  }
-
-  getActiveExperience () {
-    return this.experiences.find((experience) => {
-      return experience.active === true
-    })
+    this.experiences = [ZenExperience, ActeExperience]
   }
 
   getExperienceByName (name) {
     return this.experiences.find((experience) => {
       return experience.name === name
+    })
+  }
+
+  getExperiencesNames () {
+    return this.experiences.map((experience) => {
+      return experience.name
     })
   }
 

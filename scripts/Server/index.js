@@ -3,6 +3,8 @@ import http from 'http'
 import SockJs from 'sockjs'
 import ExperienceManager from '../Experiences/ExperienceManager'
 import Data from './Data'
+import WriteToLog from '../WriteToLog'
+import Ambiant from '../Ambiant'
 
 const PORT = 8080
 
@@ -10,11 +12,10 @@ export default class Server {
   constructor () {
     this.app = Express()
     this.app.use(Express.static('public'))
-    this.sockets = []
 
     this.setMainRoutes()
     this.createServer()
-    this.setSocketRoutes()
+    this.listenAuthentification()
 
     ExperienceManager.defineExperiences()
   }
@@ -35,15 +36,30 @@ export default class Server {
     })
   }
 
-  setSocketRoutes () {
+  listenAuthentification () {
     this.io.on('connection', (socket) => {
       socket.on('data', (datas) => {
         const data = new Data(datas)
+
         if (data.getType() === 'auth') {
-          ExperienceManager.getExperienceByName(data.get('device')).setSocket(socket)
+          const device = data.get('device')
+          switch (device) {
+            case 'client':
+              WriteToLog.setSocket(socket)
+              break
+            case 'ambiant':
+              Ambiant.setSocket(socket)
+              WriteToLog.write('Set ambiant Socket')
+              break
+            default:
+              const experience = ExperienceManager.getExperienceByName(device)
+              if (experience) {
+                WriteToLog.write(`Set socket on ${experience.name} experience`)
+                experience.setSocket(socket)
+              }
+          }
         }
       })
-      this.sockets.push(socket)
     })
   }
 
