@@ -52,7 +52,7 @@ export default class Server {
               WriteToLog.write('Set ambiant Socket')
               break
             default:
-              const experience = ExperienceManager.getExperienceByName(device)
+              const experience = ExperienceManager.getExperiencesNames(device)
               if (experience) {
                 WriteToLog.write(`Set socket on ${experience.name} experience`)
                 experience.setSocket(socket)

@@ -2,7 +2,7 @@ import Experience from './Experience'
 
 class ActeExperience extends Experience {
   constructor () {
-    super('acte')
+    super('acte', 5)
   }
 }
 

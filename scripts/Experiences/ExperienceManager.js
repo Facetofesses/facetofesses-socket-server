@@ -8,9 +8,15 @@ class ExperienceManager {
   }
 
   getExperienceByName (name) {
-    return this.experiences.find((experience) => {
+    return this.experiences.first((experience) => {
       return experience.name === name
     })
+  }
+
+  getExperienceNameByPosition (position) {
+    return this.experiences.find((experience) => {
+      return experience.position === position
+    }).name
   }
 
   getExperiencesNames () {

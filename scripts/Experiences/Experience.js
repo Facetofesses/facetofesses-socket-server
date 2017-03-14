@@ -1,9 +1,9 @@
 import SocketListener from '../SocketListener'
 
 export default class Experience extends SocketListener {
-  constructor (name) {
+  constructor (name, position) {
     super()
     this.name = name
-    this.datas = []
+    this.position = position
   }
 }

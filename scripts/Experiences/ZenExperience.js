@@ -3,7 +3,7 @@ import UserManager from '../User/UserManager'
 
 class ZenExperience extends Experience {
   constructor () {
-    super('zen')
+    super('zen', 0)
   }
 
   getDatas () {

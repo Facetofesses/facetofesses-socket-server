@@ -1,8 +1,10 @@
 import SocketListener from './SocketListener'
+import WriteToLog from './WriteToLog'
 
 class Ambiant extends SocketListener {
   onSocketDatasReceived (datas) {
-    super.onSocketDatasReceived()
+    super.onSocketDatasReceived(datas)
+    WriteToLog.write('test')
   }
 }
 
