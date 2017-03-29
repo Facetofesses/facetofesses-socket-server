@@ -1,25 +1,18 @@
-import ExperienceManager from '../Experiences/ExperienceManager'
-
 export default class User {
   constructor () {
-    this.currentExperiencePosition = 0
-    this.setCUrrentExperienceName()
-  }
-
-  upgradePosition () {
-    this.currentExperiencePosition++
-    this.setCUrrentExperienceName()
-  }
-
-  setCUrrentExperienceName () {
-    this.currentExperienceName = ExperienceManager.getExperienceNameByPosition(this.position)
+    console.log('create user')
+    this.position = 1
+    this.name = null
+    this.sex = null
+    this.sexualOrientation = null
+    this.age = null
   }
 
   setName () {
 
   }
 
-  setSurname () {
+  setAge () {
 
   }
 
@@ -27,7 +20,7 @@ export default class User {
 
   }
 
-  setOrientation () {
+  setSexualOrientation () {
 
   }
 }

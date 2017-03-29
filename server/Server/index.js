@@ -1,10 +1,8 @@
 import Express from 'express'
 import http from 'http'
 import SockJs from 'sockjs'
-import ExperienceManager from '../Experiences/ExperienceManager'
-import Data from './Data'
-import WriteToLog from '../WriteToLog'
-import Ambiant from '../Ambiant'
+import StepManager from '../Steps/StepManager'
+import WriteToLog from '../utils/WriteToLog'
 
 const PORT = 8080
 
@@ -17,7 +15,7 @@ export default class Server {
     this.createServer()
     this.listenAuthentification()
 
-    ExperienceManager.defineExperiences()
+    StepManager.defineExperiences()
   }
 
   createServer () {
@@ -39,20 +37,16 @@ export default class Server {
   listenAuthentification () {
     this.io.on('connection', (socket) => {
       socket.on('data', (datas) => {
-        const data = new Data(datas)
+        const data = JSON.parse(datas)
 
-        if (data.getType() === 'auth') {
-          const device = data.get('device')
+        if (data['type'] === 'auth') {
+          const device = data['device']
           switch (device) {
             case 'client':
               WriteToLog.setSocket(socket)
               break
-            case 'ambiant':
-              Ambiant.setSocket(socket)
-              WriteToLog.write('Set ambiant Socket')
-              break
             default:
-              const experience = ExperienceManager.getExperiencesNames(device)
+              const experience = StepManager.getStepByName(device)
               if (experience) {
                 WriteToLog.write(`Set socket on ${experience.name} experience`)
                 experience.setSocket(socket)

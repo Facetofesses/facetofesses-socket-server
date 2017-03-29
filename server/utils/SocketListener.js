@@ -1,5 +1,3 @@
-import Data from './Server/Data'
-
 export default class SocketListener {
   setSocket (socket) {
     this.socket = socket
@@ -8,14 +6,14 @@ export default class SocketListener {
 
   listen () {
     this.socket.on('data', (datas) => {
-      this.onSocketDatasReceived(new Data(datas))
+      this.onSocketDatasReceived(JSON.parse(datas))
     })
   }
 
   onSocketDatasReceived (datas) {}
 
   emit (type, datas) {
-    const obj = Object.assign({}, {type}, datas)
+    const obj = Object.assign({}, datas, {type})
     this.socket.write(JSON.stringify(obj))
   }
 }
