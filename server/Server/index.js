@@ -46,10 +46,10 @@ export default class Server {
               WriteToLog.setSocket(socket)
               break
             default:
-              const experience = StepManager.getStepByName(device)
-              if (experience) {
-                WriteToLog.write(`Set socket on ${experience.name} experience`)
-                experience.setSocket(socket)
+              const step = StepManager.getStepByName(device)
+              if (step) {
+                WriteToLog.write(`Set socket on ${step.name} step`)
+                step.setSocket(socket)
               }
           }
         }
