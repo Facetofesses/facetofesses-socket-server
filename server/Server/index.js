@@ -2,7 +2,7 @@ import Express from 'express'
 import http from 'http'
 import SockJs from 'sockjs'
 import StepManager from '../Steps/StepManager'
-import WriteToLog from '../utils/WriteToLog'
+import SocketDisatcher from '../utils/SocketDispatcher'
 
 const PORT = 8080
 
@@ -13,11 +13,15 @@ export default class Server {
 
     this.setMainRoutes()
     this.createServer()
-    this.listenAuthentification()
 
     StepManager.defineExperiences()
+    SocketDisatcher.setSocketServer(this.io)
+    SocketDisatcher.startDispatch()
   }
 
+  /**
+   * Create Express & Socket server
+   */
   createServer () {
     this.server = http.createServer(this.app)
     this.io = SockJs.createServer({
@@ -28,32 +32,12 @@ export default class Server {
     })
   }
 
+  /**
+   * Set all Express routes
+   */
   setMainRoutes () {
     this.app.get('/', (req, res) => {
       res.sendFile('index.html')
-    })
-  }
-
-  listenAuthentification () {
-    this.io.on('connection', (socket) => {
-      socket.on('data', (datas) => {
-        const data = JSON.parse(datas)
-
-        if (data['type'] === 'auth') {
-          const device = data['device']
-          switch (device) {
-            case 'client':
-              WriteToLog.setSocket(socket)
-              break
-            default:
-              const experience = StepManager.getStepByName(device)
-              if (experience) {
-                WriteToLog.write(`Set socket on ${experience.name} experience`)
-                experience.setSocket(socket)
-              }
-          }
-        }
-      })
     })
   }
 

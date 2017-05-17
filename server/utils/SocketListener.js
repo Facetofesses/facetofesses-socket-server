@@ -1,3 +1,6 @@
+/**
+ * All steps class extends this utils class to receive socket events
+ */
 export default class SocketListener {
   setSocket (socket) {
     this.socket = socket
@@ -8,6 +11,7 @@ export default class SocketListener {
     this.socket.on('data', (datas) => {
       this.onSocketDatasReceived(JSON.parse(datas))
     })
+    this.socket.on('close', this.onClose.bind(this))
   }
 
   onSocketDatasReceived (datas) {}
@@ -16,4 +20,6 @@ export default class SocketListener {
     const obj = Object.assign({}, datas, {type})
     this.socket.write(JSON.stringify(obj))
   }
+
+  onClose () {}
 }
