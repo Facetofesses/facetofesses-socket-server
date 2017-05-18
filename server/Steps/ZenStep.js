@@ -8,8 +8,18 @@ class ZenStep extends Step {
 
   onSocketDatasReceived (datas) {
     super.onSocketDatasReceived(datas)
-    UserManager.createUser()
+
+    if (datas['type'] === 'action') {
+      if (datas['action'] === 'start') {
+        this.start()
+      }
+    }
+
     this.updateUser()
+  }
+
+  start () {
+    UserManager.createUser()
   }
 }
 

@@ -13,16 +13,12 @@ class StepManager {
     })
   }
 
-  getStepNameByPosition (position) {
-    return this.steps.find((step) => {
-      return step.position === position
-    }).name
+  getStepByPosition (position) {
+    return this.steps.find(step => step.position === position)
   }
 
   getStepsNames () {
-    return this.steps.map((step) => {
-      return step.name
-    })
+    return this.steps.map(step => step.name)
   }
 }
 

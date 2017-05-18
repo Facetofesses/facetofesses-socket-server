@@ -2,7 +2,7 @@ import Express from 'express'
 import http from 'http'
 import SockJs from 'sockjs'
 import StepManager from '../Steps/StepManager'
-import WriteToLog from '../utils/WriteToLog'
+import SocketDisatcher from '../utils/SocketDispatcher'
 
 const PORT = 8080
 
@@ -13,11 +13,15 @@ export default class Server {
 
     this.setMainRoutes()
     this.createServer()
-    this.listenAuthentification()
 
     StepManager.defineExperiences()
+    SocketDisatcher.setSocketServer(this.io)
+    SocketDisatcher.startDispatch()
   }
 
+  /**
+   * Create Express & Socket server
+   */
   createServer () {
     this.server = http.createServer(this.app)
     this.io = SockJs.createServer({
@@ -28,6 +32,9 @@ export default class Server {
     })
   }
 
+  /**
+   * Set all Express routes
+   */
   setMainRoutes () {
     this.app.get('/', (req, res) => {
       res.sendFile('index.html')
