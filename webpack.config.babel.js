@@ -53,6 +53,9 @@ const defaultConfig = {
   devtool: 'eval-cheap-module-source-map',
   resolve: {
     extensions: ['.js']
+  },
+  externals: {
+    serialport: "require('serialport')"
   }
 }
 

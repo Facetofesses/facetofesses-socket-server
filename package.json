@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "express": "^4.14.1",
+    "serialport": "^4.0.7",
     "sockjs": "^0.3.18"
   }
 }
