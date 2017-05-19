@@ -2,7 +2,7 @@ import Express from 'express'
 import http from 'http'
 import SockJs from 'sockjs'
 import StepManager from '../Steps/StepManager'
-import SocketDisatcher from '../utils/SocketDispatcher'
+import SocketDispatcher from '../utils/SocketDispatcher'
 
 const PORT = 8080
 
@@ -15,8 +15,8 @@ export default class Server {
     this.createServer()
 
     StepManager.defineExperiences()
-    SocketDisatcher.setSocketServer(this.io)
-    SocketDisatcher.startDispatch()
+    SocketDispatcher.setSocketServer(this.io)
+    SocketDispatcher.startDispatch()
   }
 
   /**
