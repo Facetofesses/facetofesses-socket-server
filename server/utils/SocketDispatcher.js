@@ -10,7 +10,6 @@ class SocketDispatcher {
     this.io = io
 
     // binded event methods
-    this.bindedOnData = this.onData.bind(this)
     this.bindedOnConnection = this.onConnection.bind(this)
   }
 
@@ -23,14 +22,14 @@ class SocketDispatcher {
   }
 
   onConnection (socket) {
-    socket.on('data', this.bindedOnData)
+    socket.on('data', (datas) => this.onData(datas, socket))
   }
 
   /**
    * Pass socket its Step class by switching on 'device' key
    * @param datas Parsed datas received by data event
    */
-  onAuth (datas) {
+  onAuth (datas, socket) {
     const device = datas['device']
 
     switch (device) {
@@ -50,10 +49,10 @@ class SocketDispatcher {
   /**
    * @param datas JSON string received
    */
-  onData (datas) {
+  onData (datas, socket) {
     const data = JSON.parse(datas)
     if (data['type'] === 'auth') {
-      this.onAuth(data)
+      this.onAuth(data, socket)
     }
   }
 }
