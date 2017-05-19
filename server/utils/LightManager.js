@@ -1,13 +1,13 @@
 import SerialPort from 'serialport'
 
 const boardPort = '/dev/cu.usbmodem1411'
-const DEBUG = false
 let instance = null
 
 export default class LightManager {
   constructor () {
     if (!instance) {
       instance = this
+      this.started = false
 
       this.setup()
     }
@@ -23,13 +23,26 @@ export default class LightManager {
       }
 
       console.log('Port opened ' + boardPort)
+    })
+  }
 
-      if (DEBUG === true) this.debug()
+  start () {
+    this.port.write('[', (err) => {
+      if (err) {
+        return console.log('Error on write: ', err.message)
+      }
+      this.started = true
+      console.log('Color chasing started')
     })
   }
 
   update (value) {
-    this.port.write(value.toString(), function (err) {
+    if (!this.started) {
+      console.log('You should start color chasing before updating its progress')
+      return false
+    }
+
+    this.port.write(value.toString(), (err) => {
       if (err) {
         return console.log('Error on write: ', err.message)
       }
@@ -37,19 +50,13 @@ export default class LightManager {
     })
   }
 
-  debug () {
-    let i = 0
-    setInterval(() => {
-      this.port.write(i.toString(), function (err) {
-        if (err) {
-          return console.log('Error on write: ', err.message)
-        }
-        console.log('Sent ' + i + ' to board')
-      })
-
-      if (i < 100) {
-        i++
+  stop () {
+    this.port.write(']', (err) => {
+      if (err) {
+        return console.log('Error on write: ', err.message)
       }
-    }, 500)
+      this.started = false
+      console.log('Color chasing stopped')
+    })
   }
 }

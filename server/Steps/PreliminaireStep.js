@@ -14,7 +14,11 @@ class PreliminaireStep extends Step {
   }
 
   onUpdate (datas) {
-    this.lightManager.update(datas.excitation)
+    if (!this.lightManager.started && datas.excitation > 1) {
+      this.lightManager.start()
+    }
+
+    if (this.lightManager.started) this.lightManager.update(datas.excitation)
   }
 }
 
